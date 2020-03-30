@@ -14,7 +14,7 @@ import {
     WelcomePage,
     isWelcomePageAppEnabled,
     isWelcomePageUserEnabled
-} from '../welcome';
+} from '../custom-welcome';
 
 /**
  * Object describing application route.
@@ -43,7 +43,7 @@ export function _getRouteToRender(stateful: Function | Object): Promise<Route> {
     if (navigator.product === 'ReactNative') {
         return _getMobileRoute(state);
     }
-
+    console.log("Obtaining Route to Render!", state);
     return _getWebConferenceRoute(state) || _getWebWelcomePageRoute(state);
 }
 
@@ -75,6 +75,7 @@ function _getMobileRoute(state): Promise<Route> {
  * @returns {Promise<Route>|undefined}
  */
 function _getWebConferenceRoute(state): ?Promise<Route> {
+    console.log("WebConference?");
     if (!isRoomValid(state['features/base/conference'].room)) {
         return;
     }
@@ -86,7 +87,7 @@ function _getWebConferenceRoute(state): ?Promise<Route> {
     // the history API is that we want to load the config.js which takes the
     // room into account.
     const { locationURL } = state['features/base/connection'];
-
+    console.log("YES CONFERENCE", locationURL);
     if (window.location.href !== locationURL.href) {
         route.href = locationURL.href;
 
@@ -114,10 +115,12 @@ function _getWebConferenceRoute(state): ?Promise<Route> {
  * @returns {Promise<Route>}
  */
 function _getWebWelcomePageRoute(state): Promise<Route> {
+    console.log("WelcomePage?", state);
     const route = _getEmptyRoute();
 
     if (isWelcomePageUserEnabled(state)) {
         if (isSupportedBrowser()) {
+            console.log("WelcomePage it is!!");
             route.component = WelcomePage;
         } else {
             route.component = UnsupportedDesktopBrowser;
